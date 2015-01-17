@@ -1,15 +1,14 @@
 Summary:	Library for controlling team network device
 Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
-Version:	1.11
+Version:	1.15
 Release:	1
 License:	LGPL v2.1+
 Group:		Libraries
 #Source0Download: http://libteam.org/
 Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
-# Source0-md5:	21a514f7c206cc0ccc2fd274a32d49fe
-Patch0:		%{name}-missing.patch
-Patch1:		%{name}-link.patch
+# Source0-md5:	4f563df390b4f11e45c030a9ac38a250
+Patch0:		%{name}-link.patch
 URL:		http://libteam.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -81,7 +80,6 @@ Statyczna biblioteka libteam.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__libtoolize}
