@@ -1,19 +1,21 @@
 Summary:	Library for controlling team network device
 Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
-Version:	1.17
+Version:	1.25
 Release:	1
 License:	LGPL v2.1+
 Group:		Libraries
 #Source0Download: http://libteam.org/
 Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
-# Source0-md5:	07aa6921326767b8588392df812d4cfa
+# Source0-md5:	9e51c42b08ff8e80561e0b1cd5af266f
 Patch0:		%{name}-link.patch
 URL:		http://libteam.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	dbus-devel
 BuildRequires:	jansson-devel
+# if non-root --with-group or --with-user
+#BuildRequires:	libcap-devel
 BuildRequires:	libdaemon-devel
 BuildRequires:	libnl-devel >= 3.2
 BuildRequires:	libtool >= 2:2
