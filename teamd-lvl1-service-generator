@@ -3,7 +3,7 @@
 destunitdir=${1:-/tmp}
 
 # Do nothing if target is disabled
-[ -e /etc/systemd/system/multi-user.target.wants/teamd-lvl1.target ] || exit 0
+[ -e /etc/systemd/system/network.target.wants/teamd-lvl1.target ] || exit 0
 
 [ -f /etc/sysconfig/teamd ] && . /etc/sysconfig/teamd
 
