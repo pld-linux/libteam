@@ -1,0 +1,5 @@
+# Which team interfaces should be set up on system boot
+# as defined in /etc/sysconfig/interfaces/team-$IFNAME
+# LVL1 interfaces start before LVL2; it's for stacking
+#LVL1TEAMIFS="team0 team1"
+#LVL2TEAMIFS="team2"

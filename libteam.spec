@@ -2,12 +2,18 @@ Summary:	Library for controlling team network device
 Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
 Version:	1.25
-Release:	1
+Release:	2
 License:	LGPL v2.1+
 Group:		Libraries
 #Source0Download: http://libteam.org/
 Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
 # Source0-md5:	9e51c42b08ff8e80561e0b1cd5af266f
+Source1:    teamd.sysconfig
+Source2:    teamd-lvl1-service-generator
+Source3:    teamd-lvl2-service-generator
+Source4:    teamd@.service
+Source5:    teamd-lvl1.target
+Source6:    teamd-lvl2.target
 Patch0:		%{name}-link.patch
 URL:		http://libteam.org/
 BuildRequires:	autoconf >= 2.50
@@ -96,9 +102,20 @@ Statyczna biblioteka libteam.
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT/etc/dbus-1/system.d \
+           $RPM_BUILD_ROOT/etc/sysconfig \
+           $RPM_BUILD_ROOT/lib/systemd/{system-generators,system}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+install teamd/dbus/teamd.conf $RPM_BUILD_ROOT/etc/dbus-1/system.d
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/teamd
+install %{SOURCE2} $RPM_BUILD_ROOT/lib/systemd/system-generators
+install %{SOURCE3} $RPM_BUILD_ROOT/lib/systemd/system-generators
+install %{SOURCE4} $RPM_BUILD_ROOT%{systemdunitdir}
+install %{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}
+install %{SOURCE6} $RPM_BUILD_ROOT%{systemdunitdir}
 
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/lib*.la
@@ -106,12 +123,24 @@ rm -rf $RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-p /sbin/ldconfig
-%postun	-p /sbin/ldconfig
+%post
+/sbin/ldconfig
+%systemd_post teamd-lvl1.target teamd-lvl2.target
+
+%preun
+%systemd_preun teamd-lvl1.target teamd-lvl2.target
+
+%postun
+/sbin/ldconfig
+%systemd_reload
 
 %files
 %defattr(644,root,root,755)
 %doc README teamd/example_configs
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/teamd
+/etc/dbus-1/system.d/teamd.conf
+%{systemdunitdir}/teamd@.service
+%{systemdunitdir}/teamd-lvl?.target
 %attr(755,root,root) %{_bindir}/bond2team
 %attr(755,root,root) %{_bindir}/teamd
 %attr(755,root,root) %{_bindir}/teamdctl
@@ -120,6 +149,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libteam.so.5
 %attr(755,root,root) %{_libdir}/libteamdctl.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libteamdctl.so.0
+%attr(755,root,root) /lib/systemd/system-generators/teamd-lvl?-service-generator
 %{_mandir}/man1/bond2team.1*
 %{_mandir}/man5/teamd.conf.5*
 %{_mandir}/man8/teamd.8*

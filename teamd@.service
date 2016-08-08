@@ -1,0 +1,9 @@
+[Unit]
+Description=Team Daemon for device %I
+Before=network.target
+
+[Service]
+BusName=org.libteam.teamd.%i
+ExecStart=/usr/bin/teamd -U -D -o -t %i -f /etc/sysconfig/interfaces/team-%i
+Restart=on-failure
+RestartPreventExitStatus=1

@@ -1,0 +1,6 @@
+[Unit]
+Description=Create team interfaces (lvl 1)
+Before=network.service
+
+[Install]
+WantedBy=multi-user.target

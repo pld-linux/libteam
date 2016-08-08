@@ -1,0 +1,7 @@
+[Unit]
+Description=Create team interfaces (lvl 2)
+Before=network.service
+After=teamd-lvl1.target
+
+[Install]
+WantedBy=multi-user.target

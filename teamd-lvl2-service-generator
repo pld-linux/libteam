@@ -1,0 +1,21 @@
+#!/bin/sh
+
+destunitdir=${1:-/tmp}
+
+# Do nothing if target is disabled
+[ -e /etc/systemd/system/multi-user.target.wants/teamd-lvl2.target ] || exit 0
+
+[ -f /etc/sysconfig/teamd ] && . /etc/sysconfig/teamd
+
+if [ -d $destunitdir/teamd-lvl2.target.wants ]; then
+        rm -f $destunitdir/teamd-lvl2.target.wants/teamd@*.service
+else
+        mkdir -p $destunitdir/teamd-lvl2.target.wants
+fi
+
+for teamif in $LVL2TEAMIFS; do
+        [ -L $destunitdir/teamd-lvl2.target.wants/teamd@$teamif.service ] && \
+                continue
+        ln -s /lib/systemd/system/teamd@.service \
+                $destunitdir/teamd-lvl2.target.wants/teamd@$teamif.service
+done
