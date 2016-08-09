@@ -2,7 +2,7 @@ Summary:	Library for controlling team network device
 Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
 Version:	1.25
-Release:	2
+Release:	3
 License:	LGPL v2.1+
 Group:		Libraries
 #Source0Download: http://libteam.org/
@@ -129,6 +129,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/ldconfig
+export NORESTART="yes"
 %systemd_post teamd-lvl1.target teamd-lvl2.target teamd-shutdown-workaround.service
 
 %preun
