@@ -14,6 +14,9 @@ Source3:    teamd-lvl2-service-generator
 Source4:    teamd@.service
 Source5:    teamd-lvl1.target
 Source6:    teamd-lvl2.target
+# You might not be able to shut down your system without this:
+# https://lists.fedorahosted.org/archives/list/libteam@lists.fedorahosted.org/thread/QYCLFVANHB47URKOST5HFT5EVWPRHGVQ/
+Source7:    teamd-shutdown-workaround.service
 Patch0:		%{name}-link.patch
 URL:		http://libteam.org/
 BuildRequires:	autoconf >= 2.50
@@ -116,6 +119,7 @@ install %{SOURCE3} $RPM_BUILD_ROOT/lib/systemd/system-generators
 install %{SOURCE4} $RPM_BUILD_ROOT%{systemdunitdir}
 install %{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}
 install %{SOURCE6} $RPM_BUILD_ROOT%{systemdunitdir}
+install %{SOURCE7} $RPM_BUILD_ROOT%{systemdunitdir}
 
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/lib*.la
@@ -125,10 +129,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/ldconfig
-%systemd_post teamd-lvl1.target teamd-lvl2.target
+%systemd_post teamd-lvl1.target teamd-lvl2.target teamd-shutdown-workaround.service
 
 %preun
-%systemd_preun teamd-lvl1.target teamd-lvl2.target
+%systemd_preun teamd-lvl1.target teamd-lvl2.target teamd-shutdown-workaround.service
 
 %postun
 /sbin/ldconfig
@@ -141,6 +145,7 @@ rm -rf $RPM_BUILD_ROOT
 /etc/dbus-1/system.d/teamd.conf
 %{systemdunitdir}/teamd@.service
 %{systemdunitdir}/teamd-lvl?.target
+%{systemdunitdir}/teamd-shutdown-workaround.service
 %attr(755,root,root) %{_bindir}/bond2team
 %attr(755,root,root) %{_bindir}/teamd
 %attr(755,root,root) %{_bindir}/teamdctl

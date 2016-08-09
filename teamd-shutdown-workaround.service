@@ -1,0 +1,12 @@
+[Unit]
+Description=DELETE ALL VLAN INTERFACES (teamd hack)
+Before=network.service
+Wants=network-pre.target
+After=teamd-lvl2.target
+
+[Service]
+ExecStart=/bin/sleep 99999d
+ExecStopPost=/bin/sh -c "for if in $(ip link show type vlan|grep '@'|awk '{print $2}'|cut -d@ -f 1); do /sbin/ip link delete $if; done"
+
+[Install]
+WantedBy=network.target
