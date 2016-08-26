@@ -3,7 +3,7 @@ Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
 #%define     _snap   20160809
 Version:	1.26
-Release:	0.1
+Release:	1
 License:	LGPL v2.1+
 Group:		Libraries
 Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
@@ -89,6 +89,14 @@ Static libteam library.
 %description static -l pl.UTF-8
 Statyczna biblioteka libteam.
 
+%package -n teamd
+Group:      Networking/Admin
+Summary:    Team network device control daemon
+Requires:   libteam = %{version}-%{release}
+
+%description -n teamd
+The teamd package contains team network device control daemon.
+
 %prep
 %setup -q
 %patch0 -p1
@@ -128,19 +136,21 @@ install %{SOURCE7} $RPM_BUILD_ROOT%{systemdunitdir}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-/sbin/ldconfig
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%post -n teamd
 export NORESTART="yes"
 %systemd_post teamd-lvl1.target teamd-lvl2.target
 
-%preun
+%preun -n teamd
 %systemd_preun teamd-lvl1.target teamd-lvl2.target
 
-%postun
-/sbin/ldconfig
+%postun -n teamd
 %systemd_reload
 
-%files
+%files -n teamd
 %defattr(644,root,root,755)
 %doc README teamd/example_configs
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/teamd
@@ -151,9 +161,6 @@ export NORESTART="yes"
 %attr(755,root,root) %{_bindir}/bond2team
 %attr(755,root,root) %{_bindir}/teamd
 %attr(755,root,root) %{_bindir}/teamdctl
-%attr(755,root,root) %{_bindir}/teamnl
-%attr(755,root,root) %{_libdir}/libteam.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libteam.so.5
 %attr(755,root,root) %{_libdir}/libteamdctl.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libteamdctl.so.0
 %attr(755,root,root) /lib/systemd/system-generators/teamd-lvl?-service-generator
@@ -161,6 +168,12 @@ export NORESTART="yes"
 %{_mandir}/man5/teamd.conf.5*
 %{_mandir}/man8/teamd.8*
 %{_mandir}/man8/teamdctl.8*
+
+%files
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/teamnl
+%attr(755,root,root) %{_libdir}/libteam.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libteam.so.5
 %{_mandir}/man8/teamnl.8*
 
 %files devel
