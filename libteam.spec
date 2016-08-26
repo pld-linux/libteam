@@ -1,14 +1,14 @@
 Summary:	Library for controlling team network device
 Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
-%define     _snap   20160809
-Version:	1.25
-Release:	4.%{_snap}
+#%define     _snap   20160809
+Version:	1.26
+Release:	0.1
 License:	LGPL v2.1+
 Group:		Libraries
-#Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
-Source0:	%{name}-%{_snap}.zip
-# Source0-md5:	3f684b28632fe3d1432bb941202033c4
+Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
+# Source0-md5:	f8529a3bfee28500bef5faff6aeb0063
+#Source0:	%{name}-%{_snap}.zip
 Source1:    teamd.sysconfig
 Source2:    teamd-lvl1-service-generator
 Source3:    teamd-lvl2-service-generator
@@ -90,7 +90,7 @@ Static libteam library.
 Statyczna biblioteka libteam.
 
 %prep
-%setup -q -n libteam-master
+%setup -q
 %patch0 -p1
 
 %build
