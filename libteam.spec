@@ -3,7 +3,7 @@ Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
 #%define     _snap   20160809
 Version:	1.26
-Release:	1
+Release:	2
 License:	LGPL v2.1+
 Group:		Libraries
 Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
@@ -141,6 +141,7 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %post -n teamd
+/sbin/ldconfig
 export NORESTART="yes"
 %systemd_post teamd-lvl1.target teamd-lvl2.target
 
@@ -148,6 +149,7 @@ export NORESTART="yes"
 %systemd_preun teamd-lvl1.target teamd-lvl2.target
 
 %postun -n teamd
+/sbin/ldconfig
 %systemd_reload
 
 %files -n teamd
