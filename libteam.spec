@@ -1,14 +1,12 @@
 Summary:	Library for controlling team network device
 Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
-#%define     _snap   20160809
 Version:	1.26
 Release:	2
 License:	LGPL v2.1+
 Group:		Libraries
 Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
 # Source0-md5:	f8529a3bfee28500bef5faff6aeb0063
-#Source0:	%{name}-%{_snap}.zip
 Source1:    teamd.sysconfig
 Source2:    teamd-lvl1-service-generator
 Source3:    teamd-lvl2-service-generator
@@ -92,7 +90,7 @@ Statyczna biblioteka libteam.
 %package -n teamd
 Group:      Networking/Admin
 Summary:    Team network device control daemon
-Requires:   libteam = %{version}-%{release}
+Requires:   %{name} = %{version}-%{release}
 
 %description -n teamd
 The teamd package contains team network device control daemon.
@@ -136,9 +134,8 @@ install %{SOURCE7} $RPM_BUILD_ROOT%{systemdunitdir}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %post -n teamd
 /sbin/ldconfig
@@ -151,6 +148,13 @@ export NORESTART="yes"
 %postun -n teamd
 /sbin/ldconfig
 %systemd_reload
+
+%files
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/teamnl
+%attr(755,root,root) %{_libdir}/libteam.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libteam.so.5
+%{_mandir}/man8/teamnl.8*
 
 %files -n teamd
 %defattr(644,root,root,755)
@@ -170,13 +174,6 @@ export NORESTART="yes"
 %{_mandir}/man5/teamd.conf.5*
 %{_mandir}/man8/teamd.8*
 %{_mandir}/man8/teamdctl.8*
-
-%files
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/teamnl
-%attr(755,root,root) %{_libdir}/libteam.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libteam.so.5
-%{_mandir}/man8/teamnl.8*
 
 %files devel
 %defattr(644,root,root,755)
