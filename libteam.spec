@@ -2,20 +2,20 @@ Summary:	Library for controlling team network device
 Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
 Version:	1.26
-Release:	2
+Release:	3
 License:	LGPL v2.1+
 Group:		Libraries
 Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
 # Source0-md5:	f8529a3bfee28500bef5faff6aeb0063
-Source1:    teamd.sysconfig
-Source2:    teamd-lvl1-service-generator
-Source3:    teamd-lvl2-service-generator
-Source4:    teamd@.service
-Source5:    teamd-lvl1.target
-Source6:    teamd-lvl2.target
+Source1:	teamd.sysconfig
+Source2:	teamd-lvl1-service-generator
+Source3:	teamd-lvl2-service-generator
+Source4:	teamd@.service
+Source5:	teamd-lvl1.target
+Source6:	teamd-lvl2.target
 # You might not be able to shut down your system without this:
 # https://lists.fedorahosted.org/archives/list/libteam@lists.fedorahosted.org/thread/QYCLFVANHB47URKOST5HFT5EVWPRHGVQ/
-Source7:    teamd-shutdown-workaround.service
+Source7:	teamd-shutdown-workaround.service
 Patch0:		%{name}-link.patch
 URL:		http://libteam.org/
 BuildRequires:	autoconf >= 2.50
@@ -30,7 +30,6 @@ BuildRequires:	libtool >= 2:2
 BuildRequires:	pkgconfig
 BuildRequires:	zeromq-devel >= 3.2.0
 Requires:	libnl >= 3.2
-Requires:	zeromq >= 3.2.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -87,13 +86,60 @@ Static libteam library.
 %description static -l pl.UTF-8
 Statyczna biblioteka libteam.
 
+%package -n libteamdctl
+Summary:	Teamd daemon control library
+Summary(pl.UTF-8):	Biblioteka sterująca demonem teamd
+Group:		Libraries
+Requires:	zeromq >= 3.2.0
+Conflicts:	teamd < 1.26-3
+
+%description -n libteamdctl
+Teamd daemon control library.
+
+%description -n libteamdctl -l pl.UTF-8
+Biblioteka sterująca demonem teamd.
+
+%package -n libteamdctl-devel
+Summary:	Header file for libteamdctl library
+Summary(pl.UTF-8):	Plik nagłówkowy biblioteki libteamdctl
+Group:		Development/Libraries
+Requires:	libteamdctl = %{version}-%{release}
+Requires:	dbus-devel
+Requires:	libdaemon-devel
+Requires:	systemd-devel
+Requires:	zeromq-devel >= 3.2.0
+
+%description -n libteamdctl-devel
+Header file for libteamdctl library.
+
+%description -n libteamdctl-devel -l pl.UTF-8
+Plik nagłówkowy biblioteki libteamdctl.
+
+%package -n libteamdctl-static
+Summary:	Static libteamdctl library
+Summary(pl.UTF-8):	Statyczna biblioteka libteamdctl
+Group:		Development/Libraries
+Requires:	libteamdctl-devel = %{version}-%{release}
+
+%description -n libteamdctl-static
+Static libteamdctl library.
+
+%description -n libteamdctl-static -l pl.UTF-8
+Statyczna biblioteka libteamdctl.
+
 %package -n teamd
-Group:      Networking/Admin
-Summary:    Team network device control daemon
-Requires:   %{name} = %{version}-%{release}
+Summary:	Team network device control daemon
+Summary(pl.UTF-8):	Demon sterujący grupowymi urządzeniami sieciowymi
+Group:		Networking/Admin
+Requires:	%{name} = %{version}-%{release}
+Requires:	libteamdctl = %{version}-%{release}
 
 %description -n teamd
 The teamd package contains team network device control daemon.
+
+%description -n teamd -l pl.UTF-8
+Ten pakiet zawiera demona sterującego grupowymi urządzeniami
+sieciowymi.
 
 %prep
 %setup -q
@@ -113,8 +159,8 @@ The teamd package contains team network device control daemon.
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/dbus-1/system.d \
-           $RPM_BUILD_ROOT/etc/sysconfig \
-           $RPM_BUILD_ROOT/lib/systemd/{system-generators,system}
+	$RPM_BUILD_ROOT/etc/sysconfig \
+	$RPM_BUILD_ROOT/lib/systemd/{system-generators,system}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -137,8 +183,10 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
+%post	-n libteamdctl -p /sbin/ldconfig
+%postun	-n libteamdctl -p /sbin/ldconfig
+
 %post -n teamd
-/sbin/ldconfig
 export NORESTART="yes"
 %systemd_post teamd-lvl1.target teamd-lvl2.target
 
@@ -146,7 +194,6 @@ export NORESTART="yes"
 %systemd_preun teamd-lvl1.target teamd-lvl2.target
 
 %postun -n teamd
-/sbin/ldconfig
 %systemd_reload
 
 %files
@@ -155,6 +202,31 @@ export NORESTART="yes"
 %attr(755,root,root) %{_libdir}/libteam.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libteam.so.5
 %{_mandir}/man8/teamnl.8*
+
+%files devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libteam.so
+%{_includedir}/team.h
+%{_pkgconfigdir}/libteam.pc
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libteam.a
+
+%files -n libteamdctl
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libteamdctl.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libteamdctl.so.0
+
+%files -n libteamdctl-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libteamdctl.so
+%{_includedir}/teamdctl.h
+%{_pkgconfigdir}/libteamdctl.pc
+
+%files -n libteamdctl-static
+%defattr(644,root,root,755)
+%{_libdir}/libteamdctl.a
 
 %files -n teamd
 %defattr(644,root,root,755)
@@ -167,24 +239,8 @@ export NORESTART="yes"
 %attr(755,root,root) %{_bindir}/bond2team
 %attr(755,root,root) %{_bindir}/teamd
 %attr(755,root,root) %{_bindir}/teamdctl
-%attr(755,root,root) %{_libdir}/libteamdctl.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libteamdctl.so.0
 %attr(755,root,root) /lib/systemd/system-generators/teamd-lvl?-service-generator
 %{_mandir}/man1/bond2team.1*
 %{_mandir}/man5/teamd.conf.5*
 %{_mandir}/man8/teamd.8*
 %{_mandir}/man8/teamdctl.8*
-
-%files devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libteam.so
-%attr(755,root,root) %{_libdir}/libteamdctl.so
-%{_includedir}/team.h
-%{_includedir}/teamdctl.h
-%{_pkgconfigdir}/libteam.pc
-%{_pkgconfigdir}/libteamdctl.pc
-
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libteam.a
-%{_libdir}/libteamdctl.a
