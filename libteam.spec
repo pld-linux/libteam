@@ -2,7 +2,7 @@ Summary:	Library for controlling team network device
 Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
 Version:	1.26
-Release:	3
+Release:	4
 License:	LGPL v2.1+
 Group:		Libraries
 Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
@@ -91,6 +91,7 @@ Summary:	Teamd daemon control library
 Summary(pl.UTF-8):	Biblioteka sterująca demonem teamd
 Group:		Libraries
 Requires:	zeromq >= 3.2.0
+Conflicts:	libteam < 1.26-1
 Conflicts:	teamd < 1.26-3
 
 %description -n libteamdctl
