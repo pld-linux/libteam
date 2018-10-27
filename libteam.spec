@@ -1,12 +1,13 @@
 Summary:	Library for controlling team network device
 Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
-Version:	1.26
-Release:	4
+Version:	1.27
+Release:	1
 License:	LGPL v2.1+
 Group:		Libraries
+#Source0Download: http://libteam.org/
 Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
-# Source0-md5:	f8529a3bfee28500bef5faff6aeb0063
+# Source0-md5:	5653de1dc994a8ee8914e41d1943a8f8
 Source1:	teamd.sysconfig
 Source2:	teamd-lvl1-service-generator
 Source3:	teamd-lvl2-service-generator
@@ -30,6 +31,7 @@ BuildRequires:	libtool >= 2:2
 BuildRequires:	pkgconfig
 BuildRequires:	zeromq-devel >= 3.2.0
 Requires:	libnl >= 3.2
+Requires:	zeromq >= 3.2.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
