@@ -1,13 +1,13 @@
 Summary:	Library for controlling team network device
 Summary(pl.UTF-8):	Biblioteka do sterowania grupowymi urządzeniami sieciowymi
 Name:		libteam
-Version:	1.30
+Version:	1.31
 Release:	1
 License:	LGPL v2.1+
 Group:		Libraries
 #Source0Download: http://libteam.org/
 Source0:	http://libteam.org/files/%{name}-%{version}.tar.gz
-# Source0-md5:	208cc5f32ce3376d373496d7f44fca8e
+# Source0-md5:	0a09862957588ba33fb2257e843edc63
 Source1:	teamd.sysconfig
 Source2:	teamd-lvl1-service-generator
 Source3:	teamd-lvl2-service-generator
